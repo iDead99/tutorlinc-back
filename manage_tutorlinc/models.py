@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.contrib import admin
 from django.conf import settings
@@ -20,7 +21,7 @@ class Teacher(models.Model):
         upload_to='profile_pictures/',
         validators=[validate_file_size],                                
         blank=True
-        )
+    )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
 
     def __str__(self):
@@ -33,6 +34,21 @@ class Teacher(models.Model):
     @admin.display(ordering='user__last_name')
     def last_name(self):
         return self.user.last_name
+
+    class Meta:
+        ordering = ['user__first_name', 'user__last_name']
+
+    def save(self, *args, **kwargs):
+        """Deletes the old profile picture from storage when a new one is uploaded."""
+        if self.pk:  # Ensure the instance already exists
+            old_instance = Teacher.objects.filter(pk=self.pk).first()
+            if old_instance and old_instance.profile_picture:  # Ensure there is an existing profile picture
+                if self.profile_picture and self.profile_picture != old_instance.profile_picture:
+                    old_image_path = old_instance.profile_picture.path
+                    if os.path.exists(old_image_path):
+                        os.remove(old_image_path)
+
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
@@ -63,12 +79,12 @@ class Verification(models.Model):
         validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
     )
     id_verification = models.BooleanField(default=False)
-    teacher = models.OneToOneField('Teacher', on_delete=models.CASCADE, primary_key=True, db_index=True)
+    teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True)
 
 class Inquiry(models.Model):
     student_name = models.CharField(max_length=255)
     email = models.EmailField(null=True, blank=True)
-    phone = models.CharField(max_length=15)
+    phone = models.CharField(max_length=15, db_index=True)  # Useful if filtering inquiries by phone
     message = models.TextField()
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True)
 
