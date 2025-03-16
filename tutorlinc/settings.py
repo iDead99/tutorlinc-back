@@ -17,18 +17,25 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import environ
+env = environ.Env()
+
+environ.Env.read_env()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)(bmupneb-!4u0#8^)e!^84@%_d2*ka+==bot#!-f3(63@8pfz'
-
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
+DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -105,13 +112,18 @@ WSGI_APPLICATION = 'tutorlinc.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tutorlinc',
+#         'HOST': 'localhost',
+#         'USER': 'root'
+#     }
+# }
+
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tutorlinc',
-        'HOST': 'localhost',
-        'USER': 'root'
-    }
+    'default': dj_database_url.parse(env('DATABASE_URL'))
 }
 
 # Password validation
@@ -149,6 +161,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
