@@ -207,7 +207,6 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('cloudinary_key'),
     'API_SECRET': os.getenv('cloudinary_secret'),
 }
-print(CLOUDINARY_STORAGE)
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
