@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "66f4c0d3baf2515be60ba2835a84de22c7b8f2a3fc8257aac3287b991e5028f0"
+            "sha256": "d1de062d8a5d6c9eabaf80ebb034c1718da96d717e401f94f447edc21b05c50c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -190,6 +190,14 @@
             "markers": "python_full_version >= '3.7.0'",
             "version": "==3.3.2"
         },
+        "cloudinary": {
+            "hashes": [
+                "sha256:ba223705409b2aaddd5196c2184d65f50a83dffcba3b94f3727658ff6a0172a3",
+                "sha256:e4191b470c5bae55542b64e0a78659af42971880294456dca480bc974fa9280a"
+            ],
+            "index": "pypi",
+            "version": "==1.42.2"
+        },
         "cryptography": {
             "hashes": [
                 "sha256:013629ae70b40af70c9a7a5db40abe5d9054e6f4380e50ce769947b73bf3caad",
@@ -254,6 +262,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.10'",
             "version": "==5.0.6"
+        },
+        "django-cloudinary-storage": {
+            "hashes": [
+                "sha256:95c855c7334141b2a485ea7eb5716de87bb6ce0d848e205debb3a3ab7bbbd49a",
+                "sha256:debd403a5f225c9d35c4af508ff4abc7fdc262129464134b60b2feeb2c44d3e1"
+            ],
+            "index": "pypi",
+            "version": "==0.3.0"
         },
         "django-cors-headers": {
             "hashes": [
@@ -608,6 +624,14 @@
             "index": "pypi",
             "markers": "python_version >= '3.4'",
             "version": "==2.0.0"
+        },
+        "six": {
+            "hashes": [
+                "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274",
+                "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
+            "version": "==1.17.0"
         },
         "social-auth-app-django": {
             "hashes": [

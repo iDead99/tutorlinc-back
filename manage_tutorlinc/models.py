@@ -4,6 +4,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from .validators import validate_file_size
+from cloudinary.models import CloudinaryField
+from django.core.exceptions import ValidationError
+
+def validate_file_size(file):
+    max_size = 5 * 1024 * 1024  # 5MB
+    if file.size > max_size:
+        raise ValidationError("File size should not exceed 5MB.")
 
 class Teacher(models.Model):
     active = 'Active'
@@ -17,11 +24,17 @@ class Teacher(models.Model):
     bio = models.TextField(blank=True)
     highest_qualification = models.CharField(max_length=50)
     availability_status = models.CharField(max_length=10, choices=AVAILABILITY_CHOICES, default=active)
-    profile_picture = models.ImageField(
-        upload_to='profile_pictures/',
-        validators=[validate_file_size],                                
-        blank=True
-    )
+    # profile_picture = models.ImageField(
+    #     upload_to='profile_pictures/',
+    #     validators=[validate_file_size],                                
+    #     blank=True
+    # )
+    profile_picture = CloudinaryField('image', blank=True)
+
+    def clean(self):
+        if self.profile_picture and hasattr(self.profile_picture, 'size'):
+            validate_file_size(self.profile_picture)
+            
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
 
     def __str__(self):
