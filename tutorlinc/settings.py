@@ -198,9 +198,7 @@ SIMPLE_JWT = {
 }
 
 
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+import cloudinary_storage
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('cloudinary_name'),
@@ -209,4 +207,3 @@ CLOUDINARY_STORAGE = {
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-

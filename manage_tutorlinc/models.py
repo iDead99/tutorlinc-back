@@ -3,14 +3,9 @@ from django.db import models
 from django.contrib import admin
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
+from django.core.files.storage import default_storage
 from .validators import validate_file_size
-from cloudinary.models import CloudinaryField
-from django.core.exceptions import ValidationError
-
-def validate_file_size(file):
-    max_size = 5 * 1024 * 1024  # 5MB
-    if file.size > max_size:
-        raise ValidationError("File size should not exceed 5MB.")
+import cloudinary.uploader
 
 class Teacher(models.Model):
     active = 'Active'
@@ -24,17 +19,12 @@ class Teacher(models.Model):
     bio = models.TextField(blank=True)
     highest_qualification = models.CharField(max_length=50)
     availability_status = models.CharField(max_length=10, choices=AVAILABILITY_CHOICES, default=active)
-    # profile_picture = models.ImageField(
-    #     upload_to='profile_pictures/',
-    #     validators=[validate_file_size],                                
-    #     blank=True
-    # )
-    profile_picture = CloudinaryField('image', blank=True)
-
-    def clean(self):
-        if self.profile_picture and hasattr(self.profile_picture, 'size'):
-            validate_file_size(self.profile_picture)
-            
+    profile_picture = models.ImageField(
+        upload_to='profile_pictures/',
+        validators=[validate_file_size],                                
+        blank=True
+    )
+           
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
 
     def __str__(self):
@@ -51,20 +41,31 @@ class Teacher(models.Model):
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
 
-    def save(self, *args, **kwargs):
-        """Deletes the old profile picture from storage when a new one is uploaded."""
-        if self.pk:  # Ensure the instance already exists
-            old_instance = Teacher.objects.filter(pk=self.pk).first()
-            if old_instance and old_instance.profile_picture:  # Ensure there is an existing profile picture
-                if self.profile_picture and self.profile_picture != old_instance.profile_picture:
-                    old_image_path = old_instance.profile_picture.path
-                    if os.path.exists(old_image_path):
-                        os.remove(old_image_path)
+    # def save(self, *args, **kwargs):
+    #     """Deletes the old profile picture from storage when a new one is uploaded."""
+    #     if self.pk:  # Ensure the instance already exists
+    #         old_instance = Teacher.objects.filter(pk=self.pk).first()
+    #         if old_instance and old_instance.profile_picture:  # Ensure there is an existing profile picture
+    #             if self.profile_picture and self.profile_picture != old_instance.profile_picture:
+    #                 old_image_path = old_instance.profile_picture.path
+    #                 if os.path.exists(old_image_path):
+    #                     os.remove(old_image_path)
+    #     super().save(*args, **kwargs)
 
-        super().save(*args, **kwargs)
+def save(self, *args, **kwargs):
+    """Deletes the old profile picture from Cloudinary when a new one is uploaded."""
+    if self.pk:  # Ensure the instance already exists
+        old_instance = Teacher.objects.filter(pk=self.pk).first()
+        if old_instance and old_instance.profile_picture:  # Ensure there is an existing profile picture
+            if self.profile_picture and self.profile_picture != old_instance.profile_picture:
+                # Extract the Cloudinary public ID from the URL
+                public_id = old_instance.profile_picture.public_id
+                if public_id:
+                    cloudinary.uploader.destroy(public_id)  # Deletes the old image from Cloudinary
 
-    class Meta:
-        ordering = ['user__first_name', 'user__last_name']
+    super().save(*args, **kwargs)
+
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=50, db_index=True)

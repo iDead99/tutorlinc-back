@@ -15,7 +15,7 @@ from .serializers import (
 )
 
 class TeacherViewSet(viewsets.ModelViewSet):
-    queryset = Teacher.objects.select_related('user').prefetch_related('subject_set').all()
+    queryset = Teacher.objects.select_related('user').prefetch_related('subject_set').all().order_by('-id')
     serializer_class = TeacherSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
