@@ -14,11 +14,18 @@ class Teacher(models.Model):
         (active, active),
         (inactive, inactive)
     ]
+    female = 'Female'
+    male = 'Male'
+    GENDER_CHOICES = [
+        (female, female),
+        (male, male)
+    ]
 
     phone = models.CharField(max_length=15)
-    bio = models.TextField(blank=True)
     highest_qualification = models.CharField(max_length=50)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     availability_status = models.CharField(max_length=10, choices=AVAILABILITY_CHOICES, default=active)
+    bio = models.TextField(blank=True)
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
         validators=[validate_file_size],                                
