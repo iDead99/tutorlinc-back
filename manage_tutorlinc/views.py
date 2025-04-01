@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Count
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
 from .models import Teacher, Subject, Address, Verification, Inquiry, Comment
@@ -15,13 +16,13 @@ from .serializers import (
 )
 
 class TeacherViewSet(viewsets.ModelViewSet):
-    queryset = Teacher.objects.select_related('user').prefetch_related('subject_set') \
+    queryset = Teacher.objects.select_related('user').prefetch_related('subjects') \
     .filter(user__is_superuser=False, user__is_staff=False) \
     .order_by('-id')
     serializer_class = TeacherSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['user__id']
+    filterset_fields = ['user__id',]
     search_fields = ['user__first_name', 'user__last_name', 'phone']
 
     @action(detail=False, methods=['GET', 'PUT', 'PATCH'], permission_classes=[permissions.IsAuthenticated])

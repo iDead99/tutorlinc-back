@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d1de062d8a5d6c9eabaf80ebb034c1718da96d717e401f94f447edc21b05c50c"
+            "sha256": "49f009847436e9f59941b8d7e9b62118d881392fed895ae55572a89ab5c44276"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -599,6 +599,22 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.8.0"
         },
+        "python-decouple": {
+            "hashes": [
+                "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f",
+                "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66"
+            ],
+            "index": "pypi",
+            "version": "==3.8"
+        },
+        "python-http-client": {
+            "hashes": [
+                "sha256:ad371d2bbedc6ea15c26179c6222a78bc9308d272435ddf1d5c84f068f249a36",
+                "sha256:bf841ee45262747e00dec7ee9971dfb8c7d83083f5713596488d67739170cea0"
+            ],
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "version": "==3.3.7"
+        },
         "python3-openid": {
             "hashes": [
                 "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf",
@@ -624,6 +640,21 @@
             "index": "pypi",
             "markers": "python_version >= '3.4'",
             "version": "==2.0.0"
+        },
+        "sendgrid": {
+            "hashes": [
+                "sha256:9fba62068dd13922004b6a1676e21c6435709aaf7c2b978cdf1206e3d2196c60",
+                "sha256:d1af52f8cbb900bf79e28aa08102a503f5e26489c7b9f1d9750758a4b27c84d1"
+            ],
+            "index": "pypi",
+            "version": "==3.6.5"
+        },
+        "sendgrid-django": {
+            "hashes": [
+                "sha256:fef60ba37d588e5e1c4dcbb3b8b7f8c16920e3e89432de357f6abd6157c4f5f4"
+            ],
+            "index": "pypi",
+            "version": "==4.2.0"
         },
         "six": {
             "hashes": [
@@ -659,6 +690,12 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==0.5.0"
+        },
+        "starkbank-ecdsa": {
+            "hashes": [
+                "sha256:9399c3371b899d4a235b68a1ed7919d202fbf024bd2c863ae8ebdad343c2a63a"
+            ],
+            "version": "==2.2.0"
         },
         "typing-extensions": {
             "hashes": [

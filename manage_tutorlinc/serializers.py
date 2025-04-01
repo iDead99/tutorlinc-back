@@ -48,7 +48,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class VerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Verification
-        fields = ['id_card', 'id_verification', 'certificate', 'teacher']
+        fields = ['id_card', 'certificate', 'id_approved', 'teacher']
         read_only_fields = ['teacher']
 
     def create(self, validated_data):

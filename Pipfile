@@ -43,6 +43,9 @@ gunicorn = "*"
 whitenoise = "*"
 cloudinary = "*"
 django-cloudinary-storage = "*"
+sendgrid = "*"
+sendgrid-django = "*"
+python-decouple = "*"
 
 [dev-packages]
 

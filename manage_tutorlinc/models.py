@@ -80,13 +80,13 @@ class Subject(models.Model):
     day_to_teach = models.CharField(max_length=10)
     start_time = models.TimeField()
     end_time = models.TimeField()
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True, related_name='subjects')
 
 class Address(models.Model):
     region = models.CharField(max_length=255, db_index=True)
     town = models.CharField(max_length=255, db_index=True)
     street = models.CharField(max_length=255, db_index=True)
-    teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True)
+    teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True, related_name='addresses')
 
 class Verification(models.Model):
     ALLOWED_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf']
@@ -99,15 +99,15 @@ class Verification(models.Model):
         upload_to='verification_certificates/',
         validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
     )
-    id_verification = models.BooleanField(default=False)
-    teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True)
+    id_approved = models.BooleanField(default=False)
+    teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True, related_name='verifications')
 
 class Inquiry(models.Model):
     student_name = models.CharField(max_length=255)
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=15, db_index=True)  # Useful if filtering inquiries by phone
     message = models.TextField()
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True, related_name='inquiries')
 
 class Comment(models.Model):
     comment = models.TextField()
