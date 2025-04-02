@@ -75,9 +75,9 @@ def save(self, *args, **kwargs):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=50, db_index=True)
+    name = models.CharField(max_length=255, db_index=True)
     price = models.DecimalField(max_digits=5, decimal_places=2)
-    day_to_teach = models.CharField(max_length=10)
+    day_to_teach = models.CharField(max_length=255)
     start_time = models.TimeField()
     end_time = models.TimeField()
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, db_index=True, related_name='subjects')
