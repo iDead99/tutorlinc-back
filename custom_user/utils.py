@@ -3,7 +3,7 @@ from django.conf import settings
 
 def send_verification_email(user):
     # Generate the verification link
-    verification_link = f"http://127.0.0.1:5500/frontend/verify-email.html?token={user.verification_token}"
+    verification_link = f"http://idead99.github.io/tutorlinc-front/verify-email.html?token={user.verification_token}"
 
     # Email subject
     subject = "Verify Your Email Address - TutorLinc"
