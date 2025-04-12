@@ -81,6 +81,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5500',
     'http://127.0.0.1:5500',
     'https://idead99.github.io',
+    # 'https://api.cloudinary.com',
 ]
 
 ROOT_URLCONF = 'tutorlinc.urls'
@@ -225,12 +226,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # DEFAULT_FROM_EMAIL = "manyofrederick99@gmail.com"  # Replace with your verified email from SendGrid
 
 
-import cloudinary_storage
+# import cloudinary_storage
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('cloudinary_name'),
-    'API_KEY': os.getenv('cloudinary_key'),
-    'API_SECRET': os.getenv('cloudinary_secret'),
-}
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': os.getenv('cloudinary_name'),
+#     'API_KEY': os.getenv('cloudinary_key'),
+#     'API_SECRET': os.getenv('cloudinary_secret'),
+# }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

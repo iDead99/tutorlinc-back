@@ -26,11 +26,12 @@ class Teacher(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     availability_status = models.CharField(max_length=10, choices=AVAILABILITY_CHOICES, default=active)
     bio = models.TextField(blank=True)
-    profile_picture = models.ImageField(
-        upload_to='profile_pictures/',
-        validators=[validate_file_size],                                
-        blank=True
-    )
+    # profile_picture = models.ImageField(
+    #     upload_to='profile_pictures/',
+    #     validators=[validate_file_size],                                
+    #     blank=True
+    # )
+    profile_picture = models.URLField()
            
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
 
@@ -59,19 +60,6 @@ class Teacher(models.Model):
     #                     os.remove(old_image_path)
     #     super().save(*args, **kwargs)
 
-def save(self, *args, **kwargs):
-    """Deletes the old profile picture from Cloudinary when a new one is uploaded."""
-    if self.pk:  # Ensure the instance already exists
-        old_instance = Teacher.objects.filter(pk=self.pk).first()
-        if old_instance and old_instance.profile_picture:  # Ensure there is an existing profile picture
-            if self.profile_picture and self.profile_picture != old_instance.profile_picture:
-                # Extract the Cloudinary public ID from the URL
-                public_id = old_instance.profile_picture.public_id
-                if public_id:
-                    cloudinary.uploader.destroy(public_id)  # Deletes the old image from Cloudinary
-
-    super().save(*args, **kwargs)
-
 
 
 class Subject(models.Model):
@@ -88,17 +76,23 @@ class Address(models.Model):
     street = models.CharField(max_length=255, db_index=True)
     teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True, related_name='addresses')
 
-class Verification(models.Model):
-    ALLOWED_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf']
+# class Verification(models.Model):
+#     ALLOWED_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'pdf']
 
-    id_card = models.FileField(
-        upload_to='verification_certificates/',
-        validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
-    )
-    certificate = models.FileField(
-        upload_to='verification_certificates/',
-        validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
-    )
+#     id_card = models.FileField(
+#         upload_to='verification_certificates/',
+#         validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
+#     )
+#     certificate = models.FileField(
+#         upload_to='verification_certificates/',
+#         validators=[FileExtensionValidator(allowed_extensions=ALLOWED_FILE_EXTENSIONS), validate_file_size]
+#     )
+#     id_approved = models.BooleanField(default=False)
+#     teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True, related_name='verifications')
+
+class Verification(models.Model):
+    id_card = models.URLField()  # Cloudinary URL for ID card
+    certificate = models.URLField()  # Cloudinary URL for certificate
     id_approved = models.BooleanField(default=False)
     teacher = models.OneToOneField(Teacher, on_delete=models.CASCADE, primary_key=True, db_index=True, related_name='verifications')
 
