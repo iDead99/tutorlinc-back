@@ -114,14 +114,14 @@ WSGI_APPLICATION = 'tutorlinc.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tutorlinc',
-        'HOST': 'localhost',
-        'USER': 'root'
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'tutorlinc',
+#         'HOST': 'localhost',
+#         'USER': 'root'
+#     }
+# }
 
 import dj_database_url
 DATABASES = {
@@ -208,6 +208,21 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_TIMEOUT = 30
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+
+# SENDGRID
+# import os
+# from decouple import config  # For loading environment variables (e.g., .env file)
+
+# SENDGRID_API_KEY = config('SENDGRID_API_KEY')  # Ensure this API key is in your environment
+
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # Use SMTP backend for sending emails
+# EMAIL_HOST = 'smtp.sendgrid.net'  # SendGrid SMTP server
+# EMAIL_HOST_USER = 'apikey'  # This must literally be 'apikey' (SendGrid's default username for API key auth)
+# EMAIL_HOST_PASSWORD = SENDGRID_API_KEY  # Use your SendGrid API key here as the password
+# EMAIL_PORT = 587  # Standard port for TLS
+# EMAIL_USE_TLS = True  # Enables TLS for secure email sending
+
+# DEFAULT_FROM_EMAIL = "manyofrederick99@gmail.com"  # Replace with your verified email from SendGrid
 
 
 import cloudinary_storage

@@ -1,27 +1,23 @@
-from django_use_email_as_username.models import BaseUser, BaseUserManager
 from django.db import models
-from django.utils.timezone import now
+import uuid
 from datetime import timedelta
-import random
+from django.utils.timezone import now
+from django_use_email_as_username.models import BaseUser, BaseUserManager
 
 class User(BaseUser):
+    verification_token = models.CharField(max_length=255, blank=True, null=True)
+    token_created_at = models.DateTimeField(blank=True, null=True)  # Track token creation time
+    is_active = models.BooleanField(default=False)
+
     objects = BaseUserManager()
-    
-    is_verified = models.BooleanField(default=False)
-    verification_code = models.CharField(max_length=6, blank=True, null=True)
-    verification_code_expiry = models.DateTimeField(blank=True, null=True)  # ✅ Expiry field
 
-    def generate_verification_code(self):
-        """Generates a 6-digit code and sets an expiration time (5 mins)."""
-        self.verification_code = f"{random.randint(100000, 999999)}"
-        self.verification_code_expiry = now() + timedelta(minutes=5)
+    def generate_verification_token(self):
+        self.verification_token = str(uuid.uuid4())
+        self.token_created_at = now()  # Set the current time for token creation
+        self.save()
 
-    def is_verification_code_valid(self):
-        """Checks if the verification code is still valid."""
-        return self.verification_code and self.verification_code_expiry and now() < self.verification_code_expiry
-
-    def save(self, *args, **kwargs):
-        """Generates a new code if missing and saves the user."""
-        if not self.verification_code:
-            self.generate_verification_code()
-        super().save(*args, **kwargs)
+    def is_token_expired(self):
+        if self.token_created_at:
+            expiration_time = self.token_created_at + timedelta(hours=24)  # Token valid for 24 hours
+            return now() > expiration_time
+        return True  # If no timestamp exists, consider the token expired

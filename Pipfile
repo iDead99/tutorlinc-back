@@ -44,8 +44,8 @@ whitenoise = "*"
 cloudinary = "*"
 django-cloudinary-storage = "*"
 sendgrid = "*"
-sendgrid-django = "*"
 python-decouple = "*"
+sendgrid-django = "*"
 
 [dev-packages]
 
