@@ -31,7 +31,7 @@ class Teacher(models.Model):
     #     validators=[validate_file_size],                                
     #     blank=True
     # )
-    profile_picture = models.URLField()
+    profile_picture = models.URLField(blank=True, null=True)
            
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_index=True)
 
