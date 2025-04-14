@@ -186,12 +186,20 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'custom_user.User'
 
+FRONTEND_URL = 'http://127.0.0.1:5500'
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'custom_user.serializers.UserCreateSerializer',
         'current_user': 'custom_user.serializers.UserSerializer',
     },
+    'PASSWORD_RESET_CONFIRM_URL': 'frontend/reset-password/{uid}/{token}/',
+    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': False,
+    'EMAIL': {
+        'password_reset': 'custom_user.utils.CustomPasswordResetEmail',
+    }
 }
+
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
@@ -200,14 +208,14 @@ SIMPLE_JWT = {
 
 from decouple import config
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-EMAIL_TIMEOUT = 30
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 465
+# EMAIL_USE_SSL = True
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_TIMEOUT = 30
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # SENDGRID

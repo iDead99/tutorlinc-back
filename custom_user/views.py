@@ -1,83 +1,18 @@
-# from datetime import timedelta
-# from django.utils.timezone import now
-# import random
-# from rest_framework.response import Response
-# from rest_framework.decorators import action
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from rest_framework import viewsets, permissions, status
-# from django_filters.rest_framework import DjangoFilterBackend
-# from rest_framework.filters import SearchFilter
-# from .models import User
 from .serializers import UserSerializer
-# from .utils import send_verification_email  # Import email function
-
-# class UserViewset(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
-#     filter_backends = [DjangoFilterBackend, SearchFilter]
-#     permission_classes = [permissions.IsAuthenticated]
-
-#     @action(detail=True, methods=['GET', 'PUT', 'PATCH'])
-#     def send_verification_code(self, request, pk=None):
-#         print(f"📌 View accessed: send_verification_code for user ID {pk}")  # Debug print
-
-#         try:
-#             user = self.get_object()
-#             print(f"✅ User found: {user.email}")  # Debug print
-#         except User.DoesNotExist:
-#             print("❌ User not found!")  # Debug print
-#             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-
-#         if request.method == 'GET':
-#             print("📩 GET request received")  # Debug print
-
-#             # **Check if the verification code is expired**
-#             if not user.is_verification_code_valid():
-#                 return Response(
-#                     {'error': 'Verification code expired. Please request a new one.', 'expired': True},
-#                     status=status.HTTP_400_BAD_REQUEST
-#                 )
-
-#             serializer = UserSerializer(user)
-#             return Response(serializer.data)
-
-#         elif request.method in ['PUT', 'PATCH']:
-#             print("📩 PUT/PATCH request received")  # Debug print
-            
-#             # Generate a new verification code and expiry time
-#             user.generate_verification_code()
-#             user.save()
-
-#             print("📤 Sending email...")  # Debug print
-#             email_sent = send_verification_email(user)  # Check if email was sent
-
-#             if not email_sent:
-#                 return Response(
-#                     {'error': 'Failed to send verification email. Please try again later.'},
-#                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
-#                 )
-
-#             serializer = UserSerializer(user, data=request.data, partial=True)
-#             serializer.is_valid(raise_exception=True)
-#             serializer.save()
-
-#             return Response({
-#                 'message': 'Verification code sent. This code expires in 5 minutes.',
-#                 'user': serializer.data
-#             }, status=status.HTTP_200_OK)
-
-
-
-
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
-from .utils import send_verification_email
+from .utils import send_verification_email, send_password_reset_email
 
 class UserViewset(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+# *******************Email verification*******************
     @action(detail=True, methods=["POST", "GET"])
     def send_verification(self, request, pk=None):
         user = self.get_object()
@@ -99,3 +34,51 @@ class UserViewset(viewsets.ReadOnlyModelViewSet):
             return Response({"message": "Email verified successfully!"}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
               return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# *******************Password reset*******************
+    @action(detail=False, methods=["POST"], url_path="request-password-reset")
+    def request_password_reset(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+            user.generate_verification_token()
+            send_password_reset_email(user)
+            return Response({"message": "Password reset email sent!"}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"message": "If this email exists, a password reset has been sent."}, status=200)
+
+    @action(detail=False, methods=["POST"], url_path="confirm-password-reset")
+    def confirm_password_reset(self, request):
+        token = request.data.get("token")
+        new_password = request.data.get("new_password")
+
+        if not token or not new_password:
+            return Response({"error": "Token and new password are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Find the user associated with the token
+            user = User.objects.get(verification_token=token)
+
+            if user.is_token_expired():
+                return Response({"error": "Token has expired."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Validate the new password
+            try:
+                validate_password(new_password)  # This validates the password based on Django's rules
+            except ValidationError as e:
+                return Response({"error": e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Reset password
+            user.set_password(new_password)
+            user.verification_token = None
+            user.token_created_at = None
+            user.save()
+
+            return Response({"message": "Password reset successful!"}, status=status.HTTP_200_OK)
+
+        except User.DoesNotExist:
+            return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)

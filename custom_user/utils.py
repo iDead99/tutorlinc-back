@@ -91,3 +91,99 @@ def send_verification_email(user):
         fail_silently=False,
         html_message=message  # Specify that the email is in HTML format
     )
+
+
+from django.core.mail import send_mail
+from django.conf import settings
+import uuid
+from django.utils.timezone import now
+
+def send_password_reset_email(user):
+    # Reuse the verification_token field
+    user.verification_token = str(uuid.uuid4())
+    user.token_created_at = now()
+    user.save()
+
+    reset_link = f"http://idead99.github.io/tutorlinc-front/password-reset/password-reset.html?token={user.verification_token}"
+
+    subject = "Reset Your Password - TutorLinc"
+    message = f"""
+    <html>
+    <head>
+        <style>
+            body {{
+                font-family: 'Arial', sans-serif;
+                background-color: #f9f9f9;
+                color: #333;
+                margin: 0;
+                padding: 0;
+            }}
+            .container {{
+                width: 100%;
+                background-color: #ffffff;
+                margin: 20px auto;
+                padding: 20px;
+                max-width: 600px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }}
+            .header {{
+                text-align: center;
+                margin-bottom: 20px;
+            }}
+            .header h1 {{
+                color: #007BFF;
+                font-size: 24px;
+            }}
+            .content {{
+                font-size: 16px;
+                line-height: 1.6;
+            }}
+            .content p {{
+                margin: 10px 0;
+            }}
+            .cta-button {{
+                display: inline-block;
+                padding: 12px 20px;
+                background-color: #4CAF50;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 16px;
+                text-align: center;
+                margin-top: 20px;
+            }}
+            .footer {{
+                text-align: center;
+                font-size: 14px;
+                color: #777;
+                margin-top: 20px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>Reset Your Password</h1>
+            </div>
+            <div class="content">
+                <p>Hello {user.first_name},</p>
+                <p style="font-weight: bold;">Click the button below to reset your password:</p>
+                <a href="{reset_link}" class="cta-button">Reset Password</a>
+                <p>This link is valid for 24 hours. If you did not request this email, you can safely ignore it.</p>
+            </div>
+            <div class="footer">
+                <p>Best regards, <br> The TutorLinc Team</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,
+        [user.email],
+        html_message=message
+    )
