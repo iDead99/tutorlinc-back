@@ -195,9 +195,6 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'frontend/reset-password/{uid}/{token}/',
     'SEND_ACTIVATION_EMAIL': False,
     'SEND_CONFIRMATION_EMAIL': False,
-    'EMAIL': {
-        'password_reset': 'custom_user.utils.CustomPasswordResetEmail',
-    }
 }
 
 
