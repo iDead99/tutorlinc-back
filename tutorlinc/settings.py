@@ -186,7 +186,6 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'custom_user.User'
 
-FRONTEND_URL = 'http://127.0.0.1:5500'
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'custom_user.serializers.UserCreateSerializer',
