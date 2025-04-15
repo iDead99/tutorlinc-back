@@ -13,11 +13,16 @@ class User(BaseUser):
 
     def generate_verification_token(self):
         self.verification_token = str(uuid.uuid4())
-        self.token_created_at = now()  # Set the current time for token creation
+        self.token_created_at = now()
         self.save()
 
     def is_token_expired(self):
         if self.token_created_at:
-            expiration_time = self.token_created_at + timedelta(hours=24)  # Token valid for 24 hours
+            expiration_time = self.token_created_at + timedelta(hours=24)
             return now() > expiration_time
-        return True  # If no timestamp exists, consider the token expired
+        return True
+
+    def clear_token(self):
+        self.verification_token = None
+        self.token_created_at = None
+        self.save()
