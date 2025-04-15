@@ -15,7 +15,7 @@ class User(BaseUser):
         self.verification_token = str(uuid.uuid4())
         self.token_created_at = now()
         self.save()
-
+	
     def is_token_expired(self):
         if self.token_created_at:
             expiration_time = self.token_created_at + timedelta(hours=24)
