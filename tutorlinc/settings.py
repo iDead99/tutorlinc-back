@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
     'custom_user.apps.CustomUserConfig',
-    'manage_tutorlinc',
+    # 'manage_tutorlinc',
     # 'cloudinary',
     # 'cloudinary_storage',
 ]
