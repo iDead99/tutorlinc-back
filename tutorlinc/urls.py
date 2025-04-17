@@ -13,8 +13,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path('__debug__/', include(debug_toolbar.urls)),
 
-    # path('custom_user/', include('custom_user.urls')),
-    # path('manage_tutorlinc/', include('manage_tutorlinc.urls')),
+    path('custom_user/', include('custom_user.urls')),
+    path('manage_tutorlinc/', include('manage_tutorlinc.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
