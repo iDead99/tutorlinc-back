@@ -21,8 +21,3 @@ class User(BaseUser):
             expiration_time = self.token_created_at + timedelta(hours=24)
             return now() > expiration_time
         return True
-
-    def clear_token(self):
-        self.verification_token = None
-        self.token_created_at = None
-        self.save()

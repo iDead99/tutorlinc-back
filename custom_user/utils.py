@@ -1,5 +1,8 @@
+
 from django.core.mail import send_mail
 from django.conf import settings
+import uuid
+from django.utils.timezone import now
 
 def send_verification_email(user):
     # Generate the verification link
@@ -93,10 +96,6 @@ def send_verification_email(user):
     )
 
 
-from django.core.mail import send_mail
-from django.conf import settings
-import uuid
-from django.utils.timezone import now
 
 def send_password_reset_email(user):
     # Reuse the verification_token field
